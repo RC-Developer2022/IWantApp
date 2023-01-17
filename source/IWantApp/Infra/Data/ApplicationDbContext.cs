@@ -1,4 +1,3 @@
-using Flunt.Notifications;
 using IWantApp.Domain.Product;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

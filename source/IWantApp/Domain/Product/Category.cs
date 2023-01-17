@@ -1,5 +1,3 @@
-using Flunt.Validations;
-
 namespace IWantApp.Domain.Product;
 
 public class Category : Entity

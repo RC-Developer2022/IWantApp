@@ -10,13 +10,14 @@ public class EmployeeGetAll
     public static Delegate Handle => Action;
 
     [Authorize(Policy = "Employee005Policy")]
-    public static IResult Action(int? page, int? rows, QueryAllUsersWithClaimName query)
+    public static async Task<IResult> Action(int? page, int? rows, QueryAllUsersWithClaimName query)
     {
         if (page == null)
             return Results.BadRequest("Page and rows is required");
         if (rows == null || rows > 5)
             return Results.BadRequest("Rows is required and need to be less than 6");
 
-        return Results.Ok(query.Execute(page.Value, rows.Value));
+        var result = await query.Execute(page.Value, rows.Value);
+        return Results.Ok(result);
     }
 }

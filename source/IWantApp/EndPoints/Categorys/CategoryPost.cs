@@ -12,7 +12,7 @@ public class CategoryPost
     public static Delegate Handle => Action;
 
     [Authorize(Policy = "EmployeePolicy")]
-    public static IResult Action(CategoryRequest categoryRequest, HttpContext http, ApplicationDbContext context)
+    public static async Task<IResult> Action(CategoryRequest categoryRequest, HttpContext http, ApplicationDbContext context)
     {
         var userId = http.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
         var category = new Category(categoryRequest.Name, userId, userId);
@@ -22,8 +22,8 @@ public class CategoryPost
             return Results.ValidationProblem(category.Notifications.ConvertToProblemDetails());
         }
 
-        context.Categorias.Add(category);
-        context.SaveChanges();
+        await context.Categorias.AddAsync(category);
+        await context.SaveChangesAsync();
 
         return Results.Created($"/categories/{category.Id}", category.Id);
     }
