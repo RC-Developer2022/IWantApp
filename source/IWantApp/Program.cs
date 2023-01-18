@@ -1,6 +1,9 @@
 using System.Text;
+using IWantApp.Domain.Users;
 using IWantApp.EndPoints.Categorys;
+using IWantApp.EndPoints.Clients;
 using IWantApp.EndPoints.Employees;
+using IWantApp.EndPoints.Products;
 using IWantApp.EndPoints.Security;
 using IWantApp.Infra.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -62,8 +65,8 @@ builder.Services.AddAuthorization(options =>
         .Build();
     options.AddPolicy("EmployeePolicy", p =>
         p.RequireAuthenticatedUser().RequireClaim("EmployeeCode"));
-    options.AddPolicy("Employee005Policy", p =>
-        p.RequireAuthenticatedUser().RequireClaim("EmployeeCode", "005"));
+    options.AddPolicy("CpfPolicy", p =>
+        p.RequireAuthenticatedUser().RequireClaim("Cpf"));
 });
 builder.Services.AddAuthentication(x =>
 {
@@ -86,6 +89,7 @@ builder.Services.AddAuthentication(x =>
 });
 
 builder.Services.AddScoped<QueryAllUsersWithClaimName>();
+builder.Services.AddScoped<UserCreator>();
 
 var app = builder.Build();
 
@@ -105,12 +109,19 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapMethods(ProductGetAll.Template, ProductGetAll.Methods, ProductGetAll.Handle);
+app.MapMethods(ProductPost.Template, ProductPost.Methods, ProductPost.Handle);
+app.MapMethods(ProductGetShowCase.Template, ProductGetShowCase.Methods, ProductGetShowCase.Handle);
+
 app.MapMethods(CategoryPost.Template, CategoryPost.Methods, CategoryPost.Handle);
 app.MapMethods(CategoryGetAll.Template, CategoryGetAll.Methods, CategoryGetAll.Handle);
 app.MapMethods(CategoryPut.Template, CategoryPut.Methods, CategoryPut.Handle);
 
 app.MapMethods(EmployeePost.Template, EmployeePost.Methods, EmployeePost.Handle);
 app.MapMethods(EmployeeGetAll.Template, EmployeeGetAll.Methods, EmployeeGetAll.Handle);
+
+app.MapMethods(ClientPost.Template, ClientPost.Methods, ClientPost.Handle);
+app.MapMethods(ClientGet.Template, ClientGet.Methods, ClientGet.Handle);
 
 app.MapMethods(TokenPost.Template, TokenPost.Methods, TokenPost.Handle);
 

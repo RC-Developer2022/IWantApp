@@ -1,4 +1,4 @@
-namespace IWantApp.Domain.Product;
+namespace IWantApp.Domain.Products;
 
 public class Category : Entity
 {
