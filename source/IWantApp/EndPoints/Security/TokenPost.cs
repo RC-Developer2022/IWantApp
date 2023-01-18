@@ -14,8 +14,11 @@ public class TokenPost
     public static Delegate Handle => Action;
 
     [AllowAnonymous]
-    public static IResult Action(LoginRequest loginRequest, UserManager<IdentityUser> userManager, IConfiguration configuration, ILogger<TokenPost> log)
+    public static IResult Action(LoginRequest loginRequest, UserManager<IdentityUser> userManager, IConfiguration configuration, ILogger<TokenPost> log, IWebHostEnvironment environment)
     {
+
+        log.LogInformation("Getting Token");
+
         var user = userManager.FindByEmailAsync(loginRequest.Email).Result;
         if (user == null)
             return Results.BadRequest();
@@ -38,7 +41,7 @@ public class TokenPost
 
             Audience = configuration["JwrBEarerTokenSerrings:Audience"],
             Issuer = configuration["JwrBEarerTokenSerrings:Issuer"],
-            Expires = DateTime.UtcNow.AddSeconds(30)
+            Expires = environment.IsDevelopment() || environment.IsStaging()? DateTime.UtcNow.AddYears(1): DateTime.UtcNow.AddMinutes(2)
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();

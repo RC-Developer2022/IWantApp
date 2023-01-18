@@ -13,8 +13,8 @@ public class ProductGetAll
     [Authorize(Policy = "EmployeePolicy")]
     public static async Task<IResult> Action(ApplicationDbContext context)
     {
-        var products = context.Produtos.Include(p => p.Category).OrderBy(p => p.Name).ToList();
-        var results = products.Select(p => new ProductResponce(p.Name, p.Category.Name, p.Description, p.HasStock, p.Active));
+        var products = context.Produtos.AsNoTracking().Include(p => p.Category).OrderBy(p => p.Name).ToList();
+        var results = products.Select(p => new ProductResponce(p.Name, p.Category.Name, p.Description, p.Price, p.HasStock, p.Active));
         return Results.Ok(results);
     }
 }
